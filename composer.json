@@ -7,6 +7,18 @@
             "Shafiulnaeem\\MultiAuthRolePermission\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Shafiulnaeem\\MultiAuthRolePermission\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Shafiulnaeem\\MultiAuthRolePermission\\PackageServiceProvider"
+            ]
+        }
+    },
     "authors": [
         {
             "name": "ShafiulNaeem",
@@ -14,6 +26,11 @@
         }
     ],
     "require": {
-        "laravel/passport": "^11.9"
+        "laravel/passport": "^11.9",
+        "illuminate/support": "^10.26"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.12",
+        "phpunit/phpunit": "^10.3"
     }
 }
