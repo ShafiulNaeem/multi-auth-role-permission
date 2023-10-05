@@ -1,0 +1,19 @@
+{
+    "name": "shafiulnaeem/multi-auth-role-permission",
+    "description": "Multi auth role permission where user easily assign role permission",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Shafiulnaeem\\MultiAuthRolePermission\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ShafiulNaeem",
+            "email": "shafiulnaeemrifat@gmail.com"
+        }
+    ],
+    "require": {
+        "laravel/passport": "^11.9"
+    }
+}
