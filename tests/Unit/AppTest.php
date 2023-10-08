@@ -10,4 +10,9 @@ class AppTest extends TestCase
     {
         $this->assertTrue(1 == true);
     }
+    public function auth_guard_migration()
+    {
+        // demo code
+        $this->assertTrue(1 == true);
+    }
 }

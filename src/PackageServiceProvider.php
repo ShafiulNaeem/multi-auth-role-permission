@@ -12,6 +12,12 @@ class PackageServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        //
+        // load migration
+        $this->migration();
+    }
+
+    private function migration()
+    {
+        //$this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 }

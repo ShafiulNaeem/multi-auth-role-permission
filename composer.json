@@ -9,8 +9,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Shafiulnaeem\\MultiAuthRolePermission\\Tests\\": "tests"
+            "Shafiulnaeem\\MultiAuthRolePermission\\Tests\\": "tests",
+            "Shafiulnaeem\\MultiAuthRolePermission\\Database\\Factories\\": "database/factories"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-f": "vendor/bin/phpunit --filter"
     },
     "extra": {
         "laravel": {
