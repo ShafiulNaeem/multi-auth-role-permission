@@ -24,20 +24,6 @@ class CreateAuth extends Command
         }else{
             $this->warn('Auth guard already exists.Please use different guard.');
         }
-
-//        if (! $this->configExists('blogpackage.php')) {
-//            $this->publishConfiguration();
-//            $this->info('Published configuration');
-//        } else {
-//            if ($this->shouldOverwriteConfig()) {
-//                $this->info('Overwriting configuration file...');
-//                $this->publishConfiguration($force = true);
-//            } else {
-//                $this->info('Existing configuration was not overwritten');
-//            }
-//        }
-
-//        $this->info('Installed BlogPackage');
     }
 
     private function createAuthGuard($name)
@@ -66,32 +52,5 @@ class CreateAuth extends Command
             }
         }
     }
-
-//    private function configExists($fileName)
-//    {
-//        return File::exists(config_path($fileName));
-//    }
-//
-//    private function shouldOverwriteConfig()
-//    {
-//        return $this->confirm(
-//            'Config file already exists. Do you want to overwrite it?',
-//            false
-//        );
-//    }
-//
-//    private function publishConfiguration($forcePublish = false)
-//    {
-//        $params = [
-//            '--provider' => "JohnDoe\BlogPackage\BlogPackageServiceProvider",
-//            '--tag' => "config"
-//        ];
-//
-//        if ($forcePublish === true) {
-//            $params['--force'] = true;
-//        }
-//
-//        $this->call('vendor:publish', $params);
-//    }
 
 }
