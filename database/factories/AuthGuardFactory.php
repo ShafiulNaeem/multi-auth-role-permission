@@ -11,7 +11,7 @@ class AuthGuardFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'customer',
+            'name' => 'web',
             'model' => 'Customer',
         ];
     }

@@ -5,7 +5,10 @@
     "autoload": {
         "psr-4": {
             "Shafiulnaeem\\MultiAuthRolePermission\\": "src/"
-        }
+        },
+        "files": [
+            "helper/helper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -31,7 +34,6 @@
         }
     ],
     "require": {
-        "laravel/passport": "^11.9",
         "illuminate/support": "^10.26"
     },
     "require-dev": {

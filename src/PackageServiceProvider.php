@@ -4,6 +4,8 @@ namespace Shafiulnaeem\MultiAuthRolePermission;
 
 use Illuminate\Support\ServiceProvider;
 use Shafiulnaeem\MultiAuthRolePermission\Console\CreateAuth;
+use Illuminate\Routing\Router;
+use Shafiulnaeem\MultiAuthRolePermission\Http\Middleware\Authenticate;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -18,6 +20,10 @@ class PackageServiceProvider extends ServiceProvider
         $this->migration();
         // load command
         $this->command();
+        // load middleware
+        $this->middleware();
+        //load route
+        $this->routeRegister();
     }
     private function migration()
     {
@@ -30,5 +36,13 @@ class PackageServiceProvider extends ServiceProvider
                 CreateAuth::class,
             ]);
         }
+    }
+    private function middleware(){
+        $router = $this->app->make(Router::class);
+        $router->aliasMiddleware('check.auth', Authenticate::class);
+    }
+    private function routeRegister()
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes/route.php');
     }
 }
