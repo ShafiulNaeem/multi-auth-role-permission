@@ -10,7 +10,7 @@ class Authenticate
     public function handle($request, Closure $next, $guard)
     {
         if (AuthGuard::where('name',$guard)->exists()){
-            if (auth()->guard($guard)->check()) {
+            if (auth()->guard('web')->check()) {
                 return $next($request);
             }
             return sendError('Unauthenticated.', [], 401);

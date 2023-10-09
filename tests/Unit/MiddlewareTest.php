@@ -82,12 +82,25 @@ class MiddlewareTest extends \Shafiulnaeem\MultiAuthRolePermission\Tests\TestCas
         $role = Role::factory()->create();
         $this->assertTrue($role->save());
 
+        // check role permission
+        $role_permission = RolePermission::factory()->create();
+        $this->assertTrue($role_permission->save());
+
+        // check role permission modification
+        $role_permission_modify = RolePermissionModification::factory()->create();
+        $this->assertTrue($role_permission_modify->save());
+
         $user = Customer::factory()->create();
         $this->assertTrue($user->save());
+
+        // check role permission modification
+        $role_permission_modify = RolePermissionModification::factory()->create();
+        $this->assertTrue($role_permission_modify->save());
+
         // Try to access the page
-        $response = $this->get('/test1');
-//        $response = $this->actingAs($user)
-//            ->get('/test');
+//        $response = $this->get('/test1');
+        $response = $this->actingAs($user)
+            ->get('/test');
 
         // Assert the expected response status
         $response->assertStatus(200);

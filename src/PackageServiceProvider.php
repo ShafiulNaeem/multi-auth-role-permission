@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Shafiulnaeem\MultiAuthRolePermission\Console\CreateAuth;
 use Illuminate\Routing\Router;
 use Shafiulnaeem\MultiAuthRolePermission\Http\Middleware\Authenticate;
+use Shafiulnaeem\MultiAuthRolePermission\Http\Middleware\Permission;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -40,6 +41,7 @@ class PackageServiceProvider extends ServiceProvider
     private function middleware(){
         $router = $this->app->make(Router::class);
         $router->aliasMiddleware('check.auth', Authenticate::class);
+        $router->aliasMiddleware('permission', Permission::class);
     }
     private function routeRegister()
     {

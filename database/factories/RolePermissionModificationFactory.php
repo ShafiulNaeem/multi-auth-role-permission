@@ -15,11 +15,11 @@ class RolePermissionModificationFactory extends \Illuminate\Database\Eloquent\Fa
             'auth_guard_id' => AuthGuard::first() ? AuthGuard::first()->id : null,
             'role_id' => Role::first() ? Role::first()->id : null,
             'auth_user_id' => 1,
-            'module' => 'Dashboard',
+            'module' => 'Test',
             'operation' => 'list',
-            'route' => 'admin/dashboard',
-            'url' => 'admin/dashboard',
-            'is_permit' => 1,
+            'route' => 'test',
+            'url' => 'test',
+            'is_permit' => 0
         ];
     }
 }

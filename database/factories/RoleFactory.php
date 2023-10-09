@@ -13,7 +13,7 @@ class RoleFactory extends Factory
         return [
             'auth_guard_id' => AuthGuard::first() ? AuthGuard::first()->id : null,
             'name' => 'Admin',
-            'is_admin' => true,
+            'is_admin' => false,
             'note' => 'test'
         ];
     }
