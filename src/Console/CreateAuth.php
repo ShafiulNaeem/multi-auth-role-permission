@@ -4,20 +4,26 @@ namespace Shafiulnaeem\MultiAuthRolePermission\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Shafiulnaeem\MultiAuthRolePermission\Models\AuthGuard;
+use Shafiulnaeem\MultiAuthRolePermission\Models\Role;
+
 class CreateAuth extends Command
 {
-    protected $signature = 'multiauthrolepermission:auth {name} --model={model_name}';
+    protected $signature = 'createauthguard:authguard {name}';
 
-    protected $description = 'create auth with model.';
+    protected $description = 'create auth guard.';
 
     public function handle()
     {
         $auth = $this->argument('name');
-        $model = $this->argument('model_name');
-        $this->info("Creating auth $auth for model $model...");
+        $this->info("Creating auth guard $auth ...");
         $this->newLine();
 
-        $this->createController($model);
+        if ($this->createAuthGuard($auth)){
+            $this->info('Auth guard created successfully.');
+        }else{
+            $this->warn('Auth guard already exists.Please use different guard.');
+        }
 
 //        if (! $this->configExists('blogpackage.php')) {
 //            $this->publishConfiguration();
@@ -34,99 +40,30 @@ class CreateAuth extends Command
 //        $this->info('Installed BlogPackage');
     }
 
-    private function createController($name)
+    private function createAuthGuard($name)
     {
-        // check config file
-        if (config('package.controller', true)) {
-            $this->warn('Creating Controller');
-
-            $this->call('make:controller', [
-                'name' => ucfirst($name) . 'RoleController',
-                '--resource' => config('package.resource', true),
-            ]);
-            $this->newLine();
-
-            $this->call('make:controller', [
-                'name' => ucfirst($name) . 'RolePermissionController',
-                '--resource' => config('package.resource', true),
-            ]);
-            $this->newLine();
-
-            $this->call('make:controller', [
-                'name' => ucfirst($name) . 'RolePermissionModifyController',
-                '--resource' => config('package.resource', true),
-            ]);
-            $this->newLine();
-        }
-    }
-
-
-    private function createModel($name)
-    {
-        // check config file
-        if (config('package.model', true)) {
-            $this->warn('Creating Model');
-
-            $this->call('make:model', [
-                'name' => ucfirst($name)."Role",
-                '-m' => config('package.migration', true),
-            ]);
-            $this->newLine();
-
-            $this->call('make:model', [
-                'name' => ucfirst($name)."RolePermission",
-                '-m' => config('package.migration', true),
-            ]);
-            $this->newLine();
-
-            $this->call('make:model', [
-                'name' => ucfirst($name)."RolePermissionModify",
-                '-m' => config('package.migration', true),
-            ]);
-            $this->newLine();
-        }
-    }
-
-
-    private function createSeeder($name)
-    {
-        // check config file
-        if (config('modulePermission.seeder', true)) {
-            $this->warn('Creating Seeder');
-
-            $this->call('make:seeder', [
-                'name' => ucfirst($name) . 'Seeder',
-            ]);
-            $this->newLine();
-        }
-    }
-    private function createView($name)
-    {
-        if ( config('modulePermission.view', true) ){
-            $this->warn('Creating View');
-            Artisan::call('mpermission:view ' . $name);
-            $this->info('View created successfully');
-            $this->newLine();
-        }
-    }
-
-    private function createRoute($name)
-    {
-        if ( config('modulePermission.route', true) ){
-            $this->warn('Creating Route');
-            Artisan::call('mpermission:route ' . $name);
-            $this->info('Route created successfully');
-            $this->newLine();
-        }
-    }
-
-    private function createRequest($name)
-    {
-        if ( config('modulePermission.formRequest', true) ){
-            $this->warn('Creating Request');
-            Artisan::call('make:request ' . ucfirst($name) . 'Request');
-            $this->info('Request created successfully');
-            $this->newLine();
+        if (config('package.authGuard', true)) {
+            $this->warn('Creating auth guard');
+            // check auth guard exists
+            if (! AuthGuard::where('name',$name)->exists()){
+                //create auth guard
+                $auth_guard = AuthGuard::create([
+                    'name' => $name,
+                    'model' => null,
+                ]);
+                //create role
+                Role::create([
+                    'auth_guard_id' => $auth_guard->id,
+                    'name' => 'Admin',
+                    'is_admin'=> true,
+                    'note'=> null
+                ]);
+                $this->newLine();
+                return true;
+            }else{
+                $this->newLine();
+                return false;
+            }
         }
     }
 
