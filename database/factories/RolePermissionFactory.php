@@ -14,6 +14,7 @@ class RolePermissionFactory extends \Illuminate\Database\Eloquent\Factories\Fact
         return [
             'auth_guard_id' => AuthGuard::first() ? AuthGuard::first()->id : null,
             'role_id' => Role::first() ? Role::first()->id : null,
+            'auth_user_id' => 1,
             'module' => 'Test',
             'operation' => 'list',
             'route' => 'test',

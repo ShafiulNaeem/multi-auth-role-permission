@@ -9,8 +9,8 @@ class Permission
 {
     public function handle($request, Closure $next, $guard)
     {
-        $user_id = auth()->guard('web')->user()->id;
-        $role_id = auth()->guard('web')->user()->role_id;
+        $user_id = auth()->guard($guard)->user()->id;
+        $role_id = auth()->guard($guard)->user()->role_id;
         $role_auth = DB::table('roles')
             ->join('auth_guards','auth_guards.id','=','roles.auth_guard_id')
             ->select('roles.name as role_name','roles.is_admin','auth_guards.name as auth_guard','roles.auth_guard_id')
@@ -42,7 +42,7 @@ class Permission
 
                 }
             }else{
-                return sendError('Access denied,Guard mis match.', [], 403);
+                return sendError('Access denied,Guard mismatch.', [], 403);
             }
         }else{
             return sendError('Role or Guard not defined.', [], 404);

@@ -17,6 +17,7 @@ class CreateRolePermissionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('auth_guard_id')->nullable();
             $table->unsignedBigInteger('role_id')->nullable();
+            $table->unsignedBigInteger('auth_user_id')->nullable();
             $table->string('module')->nullable();
             $table->string('operation')->nullable();
             $table->string('route')->nullable();
