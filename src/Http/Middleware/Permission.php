@@ -11,26 +11,20 @@ class Permission
     {
         $user_id = auth()->guard($guard)->user()->id;
         $role_id = auth()->guard($guard)->user()->role_id;
+
         $role_auth = DB::table('roles')
             ->join('auth_guards','auth_guards.id','=','roles.auth_guard_id')
             ->select('roles.name as role_name','roles.is_admin','auth_guards.name as auth_guard','roles.auth_guard_id')
             ->where('roles.id',$role_id)->first();
 
         if ($role_auth){
-            /*
-             * check user guard
-             * user guard wise route access
-             */
+             // check user guard  wise route access
             if ($role_auth->auth_guard == $guard){
-                /*
-                 * check user role
-                 */
+                 // check user role
                 if ($role_auth->is_admin){
                     return $next($request);
                 }else{
-                    /*
-                     * check permission
-                     */
+                     // check permission
                     $current_url = url()->current();
                     $permission = routePermission($current_url,$role_id,$user_id);
 
@@ -39,7 +33,6 @@ class Permission
                     }else{
                         return sendError('You are not authorized to access this page',[],403);
                     }
-
                 }
             }else{
                 return sendError('Access denied,Guard mismatch.', [], 403);

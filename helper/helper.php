@@ -57,10 +57,11 @@ if ( ! function_exists('routePermission') ){
         $access = false;
         if (count($permissions) > 0){
             foreach ($permissions as $route){
-                /** in future not necessary below condition **/
+                // in future not necessary below condition
                 if (strpos($route,'list/global') !== false){
                     $route =  strstr($route, '/global', true);
                 }
+
                 if(strpos($current_url,$route) !== false){
                     $access = true;
                     break;
@@ -213,6 +214,7 @@ if ( ! function_exists('permission_db_data_format') ){
                     $role_id = 0;
                     $user_id = 0;
                     $is_permit = 0;
+
                     if (count($data) > 0){
                         $auth_guard_id = $data[0]['auth_guard_id'];
                         $role_id = $data[0]['role_id'];
@@ -223,6 +225,7 @@ if ( ! function_exists('permission_db_data_format') ){
                             $is_permit = $data[$search]['is_permit'];
                         }
                     }
+
                     $array[] = [
                         'auth_guard_id'=> (int) $auth_guard_id,
                         'role_id'=> (int) $role_id,
@@ -242,7 +245,6 @@ if ( ! function_exists('permission_db_data_format') ){
             ];
         }
         return $result;
-
     }
 }
 if ( ! function_exists('permission_data_format') ){
