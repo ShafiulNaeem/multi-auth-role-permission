@@ -17,6 +17,15 @@ class AppTest extends TestCase
         $this->assertSame(true, $data);
     }
 
+
+    /**
+     * @dataProvider sumData
+     */
+    public function test_sum($a, $b, $expected)
+    {
+        $this->assertSame($expected, $a + $b);
+    }
+
     /**
      * @dataProvider
      */
@@ -25,6 +34,16 @@ class AppTest extends TestCase
         return [
             [false],
             [true]
+        ];
+    }
+
+
+    public function sumData()
+    {
+        return [
+            [2, 3, 5],
+            [2, 5, 7],
+            [2, 4, 5],
         ];
     }
 }
