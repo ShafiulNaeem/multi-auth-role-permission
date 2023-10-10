@@ -108,7 +108,47 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
             ->assertJson([
                 'message' => 'Data fetch successfully.',
             ]);
+    }
 
+    public function create()
+    {
+        $guard = AuthGuard::factory()->create();
+        $this->assertTrue($guard->save());
 
+        $api = "/role/create";
+        $request = [
+            'name' => "Admin",
+            'auth_guard_id' => 1,
+            'is_admin' => false,
+            'note' => null,
+            'role_permissions' => permission_data('web')
+        ];
+        $response = $this->postJson($api,$request);
+        $response->assertStatus(201);
+    }
+    private function list(){
+        $response = $this->get('/role/list');
+        $response->assertStatus(200);
+        $response->assertSeeText('Data fetch successfully.');
+    }
+    private function show()
+    {
+        $response = $this->get('/role/show/1');
+        $response->assertStatus(200);
+//        $response->assertSeeText('Data not found.');
+        $response->assertSeeText('Data fetch successfully.');
+    }
+    private function update()
+    {
+
+    }
+    public function test_role()
+    {
+        // create role with permission
+        $this->create();
+        // list check
+        $this->list();
+        // show data
+        $this->show();
     }
 }

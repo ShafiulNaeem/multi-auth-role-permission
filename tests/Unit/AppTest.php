@@ -29,7 +29,7 @@ class AppTest extends TestCase
     /**
      * @dataProvider
      */
-    public function dataProvider()
+    public static function dataProvider()
     {
         return [
             [false],
@@ -38,7 +38,7 @@ class AppTest extends TestCase
     }
 
 
-    public function sumData()
+    public static function sumData()
     {
         return [
             [2, 3, 5],

@@ -14,7 +14,6 @@ class Role extends Model
     {
         return RoleFactory::new();
     }
-    protected $appends = ['role_permissions'];
     public function rolePermissions()
     {
         return $this->hasMany(RolePermission::class,'role_id');
@@ -22,12 +21,5 @@ class Role extends Model
     public function authGuard()
     {
         return $this->belongsTo(AuthGuard::class);
-    }
-    public function getRolePermissionsAttribute()
-    {
-        return $this->attributes['role_permissions'] = permission_db_data_format(
-            $this->rolePermissions()->get()->toArray(),
-            $this->authGuard()->first()->name
-        );
     }
 }

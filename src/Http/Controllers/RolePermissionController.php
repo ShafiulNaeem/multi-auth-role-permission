@@ -4,6 +4,7 @@ namespace Shafiulnaeem\MultiAuthRolePermission\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Shafiulnaeem\MultiAuthRolePermission\Models\AuthGuard;
 use Shafiulnaeem\MultiAuthRolePermission\Models\Role;
 use Shafiulnaeem\MultiAuthRolePermission\Models\RolePermission;
@@ -11,16 +12,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RolePermissionController extends Controller
 {
+    private function mainQuery()
+    {
+        return Role::join('auth_guards','auth_guards.id','=','roles.auth_guard_id')
+            ->select('roles.*','auth_guards.name as auth_guard');
+    }
     public function index()
     {
         $params = request()->all();
-        $data = Role::join('auth_guards','auth_guards.id','=','roles.auth_guard_id')
-            ->select('roles.*','auth_guards.name as auth_guard')
-            ->orderBy('roles.id','desc');
+        $data = $this->mainQuery()->orderBy('roles.id','desc');
 
-        if ( $query['search'] ?? false ) {
-            $data = $data->where('roles.name', 'like', '%' . $query['search'] . '%')
-                ->orWhere('auth_guards.name', 'like', '%' . $query['search'] . '%');
+        if ( $params['search'] ?? false ) {
+            $data = $data->where('roles.name', 'like', '%' . $params['search'] . '%')
+                ->orWhere('auth_guards.name', 'like', '%' . $params['search'] . '%');
         }
         $data = $data->paginate(page_limit($params));
 
@@ -32,7 +36,7 @@ class RolePermissionController extends Controller
     }
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'auth_guard_id' => 'required|exists:auth_guards,id',
             'name' => [
                 'required',
@@ -43,7 +47,22 @@ class RolePermissionController extends Controller
             'is_admin' => 'required|boolean',
             'note' => 'nullable',
             'role_permissions' => 'nullable|array'
-        ]);
+            ],
+            [
+                'auth_guard_id.required' => 'The auth guard field is required.',
+                'auth_guard_id.exists' => 'The selected auth guard is invalid.',
+                'name.required' => 'The name field is required.',
+                'name.unique' => 'The name has already been taken for the selected auth guard.',
+                'is_admin.required' => 'The is admin field is required.',
+                'is_admin.boolean' => 'The is admin field must be a boolean value.',
+                'note.nullable' => 'The note field must be null or a valid value.',
+                'role_permissions.array' => 'The role permissions must be an array.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return sendError('Validation error',$validator->errors()->all(),Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         $role = Role::create([
             'auth_guard_id' => $request->auth_guard_id,
@@ -59,16 +78,13 @@ class RolePermissionController extends Controller
 
         return sendResponse(
             'Data inserted successfully.',
-            $role,
+            $this->mainQuery()->where('roles.id',$role->id)->first(),
             Response::HTTP_CREATED
         );
     }
     public function show($id)
     {
-        $data = Role::with('rolePermissions')
-            ->join('auth_guards','auth_guards.id','=','roles.auth_guard_id')
-            ->select('roles.*','auth_guards.name as auth_guard')
-            ->where('id',$id)->first();
+        $data =  $this->mainQuery()->with('rolePermissions')->where('roles.id',$id)->first();
         if (!$data){
             return sendError(
                 'Data not found.',
@@ -87,7 +103,7 @@ class RolePermissionController extends Controller
     }
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'auth_guard_id' => 'required|exists:auth_guards,id',
             'name' => [
                 'required',
@@ -99,7 +115,22 @@ class RolePermissionController extends Controller
             'is_admin' => 'required|boolean',
             'note' => 'nullable',
             'role_permissions' => 'nullable|array'
-        ]);
+        ],
+            [
+                'auth_guard_id.required' => 'The auth guard field is required.',
+                'auth_guard_id.exists' => 'The selected auth guard is invalid.',
+                'name.required' => 'The name field is required.',
+                'name.unique' => 'The name has already been taken for the selected auth guard.',
+                'is_admin.required' => 'The is admin field is required.',
+                'is_admin.boolean' => 'The is admin field must be a boolean value.',
+                'note.nullable' => 'The note field must be null or a valid value.',
+                'role_permissions.array' => 'The role permissions must be an array.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return sendError('Validation error',$validator->errors()->all(),Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         $role = Role::find($id);
         if (!$role){
@@ -109,7 +140,6 @@ class RolePermissionController extends Controller
                 Response::HTTP_NOT_FOUND
             );
         }
-
 
         $role->update([
             'auth_guard_id'=> $request->auth_guard_id,
@@ -145,7 +175,7 @@ class RolePermissionController extends Controller
 
         return sendResponse(
             'Data updated successfully.',
-            $role,
+            $this->mainQuery()->where('roles.id',$id)->first(),
             Response::HTTP_OK
         );
     }
