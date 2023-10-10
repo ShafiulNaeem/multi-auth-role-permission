@@ -2,17 +2,48 @@
 
 namespace Shafiulnaeem\MultiAuthRolePermission\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Shafiulnaeem\MultiAuthRolePermission\Tests\TestCase;
 
 class AppTest extends TestCase
 {
-    public function test_app()
+    /**
+     * @dataProvider dataProvider
+     * @param $data
+     * @return void
+     */
+    public function test_app( $data)
     {
-        $this->assertTrue(1 == true);
+        $this->assertSame(true, $data);
     }
-    public function auth_guard_migration()
+
+
+    /**
+     * @dataProvider sumData
+     */
+    public function test_sum($a, $b, $expected)
     {
-        // demo code
-        $this->assertTrue(1 == true);
+        $this->assertSame($expected, $a + $b);
+    }
+
+    /**
+     * @dataProvider
+     */
+    public function dataProvider()
+    {
+        return [
+            [false],
+            [true]
+        ];
+    }
+
+
+    public function sumData()
+    {
+        return [
+            [2, 3, 5],
+            [2, 5, 7],
+            [2, 4, 5],
+        ];
     }
 }
