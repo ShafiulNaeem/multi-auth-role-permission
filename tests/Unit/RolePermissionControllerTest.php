@@ -101,6 +101,7 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
 
         // Act: Make a request to the controller's module_permission method
         $response = $this->get("/role/permission/module/$guard");
+        //$response = $this->get("/guards");
 
         // Assert: Check the response
         $response->assertStatus(200)

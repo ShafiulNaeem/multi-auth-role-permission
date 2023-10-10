@@ -27,7 +27,7 @@ class RolePermissionController extends Controller
         return sendResponse(
             'Data fetch successfully.',
             $data,
-            Response::HTTP_CREATED
+            Response::HTTP_OK
         );
     }
     public function store(Request $request)
