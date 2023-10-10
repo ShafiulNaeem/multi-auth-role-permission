@@ -2,17 +2,29 @@
 
 namespace Shafiulnaeem\MultiAuthRolePermission\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Shafiulnaeem\MultiAuthRolePermission\Tests\TestCase;
 
 class AppTest extends TestCase
 {
-    public function test_app()
+    /**
+     * @dataProvider dataProvider
+     * @param $data
+     * @return void
+     */
+    public function test_app( $data)
     {
-        $this->assertTrue(1 == true);
+        $this->assertSame(true, $data);
     }
-    public function auth_guard_migration()
+
+    /**
+     * @dataProvider
+     */
+    public function dataProvider()
     {
-        // demo code
-        $this->assertTrue(1 == true);
+        return [
+            [false],
+            [true]
+        ];
     }
 }
