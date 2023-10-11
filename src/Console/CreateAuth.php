@@ -40,7 +40,7 @@ class CreateAuth extends Command
                 //create role
                 Role::create([
                     'auth_guard_id' => $auth_guard->id,
-                    'name' => 'Admin',
+                    'name' => 'Main',
                     'is_admin'=> true,
                     'note'=> null
                 ]);

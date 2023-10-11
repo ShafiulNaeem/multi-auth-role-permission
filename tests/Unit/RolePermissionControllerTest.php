@@ -141,7 +141,6 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
         $response = $this->get('/role/list');
         $response->assertStatus(200);
         $response->assertSeeText('Data fetch successfully.');
-        dd($response->content());
     }
     private function show()
     {
@@ -150,7 +149,7 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
 //        $response->assertSeeText('Data not found.');
         $response->assertSeeText('Data fetch successfully.');
     }
-    public function delete()
+    public function delete_data()
     {
 //        $response = $this->delete('role/delete/1', Role::where('id',1)->first()->toArray(), array $headers = []);
 //        $this->assertEquals(200, $response->getStatusCode());
@@ -206,7 +205,7 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
         // update
         $this->update();
         //delete
-        $this->delete();
+        $this->delete_data();
         // list check
         $this->list();
 

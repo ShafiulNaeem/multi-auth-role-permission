@@ -19,7 +19,9 @@ class RolePermissionFactory extends \Illuminate\Database\Eloquent\Factories\Fact
             'operation' => 'list',
             'route' => 'test',
             'url' => 'test',
-            'is_permit' => 1
+            'is_permit' => 1,
+            'route_name' => 'test',
+            'method' => 'get'
         ];
     }
 }

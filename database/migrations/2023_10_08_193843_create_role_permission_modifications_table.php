@@ -24,6 +24,8 @@ class CreateRolePermissionModificationsTable extends Migration
             $table->string('operation')->nullable();
             $table->string('route')->nullable();
             $table->string('url')->nullable();
+            $table->string('method')->nullable();
+            $table->string('route_name')->default(0);
             $table->integer('is_permit')->default(0);
 
             $table->foreign('auth_guard_id')

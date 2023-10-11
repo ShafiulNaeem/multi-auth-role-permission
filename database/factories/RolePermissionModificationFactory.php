@@ -19,7 +19,9 @@ class RolePermissionModificationFactory extends \Illuminate\Database\Eloquent\Fa
             'operation' => 'list',
             'route' => 'test',
             'url' => 'test',
-            'is_permit' => 0
+            'is_permit' => 0,
+            'route_name' => 'test',
+            'method' => 'get'
         ];
     }
 }
