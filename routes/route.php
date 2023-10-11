@@ -35,10 +35,13 @@ Route::group(['prefix' => 'role', 'as' => 'role.'], function () {
 });
 
 Route::middleware('check.auth:web')->group(function () {
+
     Route::middleware('permission:web')->group(function () {
         // test route
-        Route::get('/test', function () {
-            return 'ok';
+        Route::group(['prefix' => 'test', 'as' => 'testing.'],function (){
+            Route::delete('/test/{id}/ff', function () {
+                return 'ok';
+            })->name('index_route.index');
         });
     });
 });

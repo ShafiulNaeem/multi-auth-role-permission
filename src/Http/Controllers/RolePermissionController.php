@@ -162,7 +162,7 @@ class RolePermissionController extends Controller
         DB::table('role_permissions')->insert($permissions);
 
         $permission_staff = DB::table('role_permission_modifications')
-            ->select('auth_guard_id','role_id','auth_user_id','module','operation','route','is_permit','url')
+            ->select('auth_guard_id','role_id','auth_user_id','module','operation','route','is_permit','url', 'route_name', 'method')
             ->where('role_id',$id)->get()->toArray();
 
         if (count($permission_staff) > 0){
@@ -194,7 +194,9 @@ class RolePermissionController extends Controller
                         'module'=> $current_permission['module'],
                         'operation'=> $current_permission['operation'],
                         'route'=> $current_permission['route'],
-                        'is_permit'=> (int) $current_permission['is_permit']
+                        'is_permit'=> (int) $current_permission['is_permit'],
+                        'route_name' => $current_permission['route_name'],
+                        'method' => $current_permission['method']
                     ];
                 }
             }
@@ -217,7 +219,9 @@ class RolePermissionController extends Controller
                     'module'=> $datum->module,
                     'operation'=> $datum->operation,
                     'route'=> $datum->route,
-                    'is_permit'=>  $is_permit
+                    'is_permit'=>  $is_permit,
+                    'route_name' => $datum->route_name,
+                    'method' => $datum->method
                 ];
             }
         }
@@ -234,12 +238,13 @@ class RolePermissionController extends Controller
             );
         }
 
-        if (DB::table('role_permissions')->where('role_id',$id)->count() > 0){
-            DB::table('role_permissions')->where('role_id',$id)->delete();
-        }
-        if (DB::table('role_permission_modifications')->where('role_id',$id)->count() > 0){
-            DB::table('role_permission_modifications')->where('role_id',$id)->delete();
-        }
+        $rolePermission = DB::table('role_permissions')->where('role_id',$id);
+
+        if ($rolePermission->count() > 0) $rolePermission->delete();
+
+        $rolePermissionModification =  DB::table('role_permission_modifications')->where('role_id',$id);
+
+        if ($rolePermissionModification->count() > 0) $rolePermissionModification->delete();
 
         $role->delete();
         return sendResponse(
