@@ -57,12 +57,7 @@ if ( ! function_exists('routePermission') ){
         $access = false;
         if (count($permissions) > 0){
             foreach ($permissions as $route){
-                // in future not necessary below condition
-                if (strpos($route,'list/global') !== false){
-                    $route =  strstr($route, '/global', true);
-                }
-
-                if(strpos($current_url,$route) !== false){
+                if( matchTwoStringPattern($current_url,$route) ){
                     $access = true;
                     break;
                 }
@@ -71,6 +66,45 @@ if ( ! function_exists('routePermission') ){
         return $access;
     }
 }
+
+
+if ( ! function_exists('matchTwoStringPattern') ){
+    function matchTwoStringPattern($stringOne, $stringTwo): bool
+    {
+        $stringOne = strtolower($stringOne);
+        $stringTwo = strtolower($stringTwo);
+
+        $stringOneArray = explode('/', $stringOne);
+        $stringTwoArray = explode('/', $stringTwo);
+
+        if ( count($stringOneArray) != count($stringTwoArray) ) return false;
+
+        foreach ($stringOneArray as $index => $stringOneItem) {
+            $match = preg_match('/{.*}/', $stringOneItem);
+            if ( $match ){
+                $stringOneArray[$index] = $stringTwoArray[$index];
+            }
+
+            if ( str_contains($stringOneItem, '?') || str_contains($stringTwoArray[$index], '?') ){
+                if ( str_contains($stringOneArray[$index], '?') ){
+                    $stringOneArray[$index] = strstr($stringOneArray[$index], '?', true);
+                }
+
+                if ( str_contains($stringTwoArray[$index], '?') ){
+                    $stringTwoArray[$index] = strstr($stringTwoArray[$index], '?', true);
+                }
+            }
+
+            if ($stringOneArray[$index] != $stringTwoArray[$index]) return false;
+        }
+
+        $strOneNew = implode('/', $stringOneArray);
+        $strTwoNew = implode('/', $stringTwoArray);
+
+        return $strOneNew == $strTwoNew;
+    }
+}
+
 
 if ( ! function_exists('permission_data') ){
     /**
@@ -93,13 +127,14 @@ if ( ! function_exists('role_permission_array_from_route') ){
             // get name
             $routeName = $route['name'];
             $routeNameArray = explode('.', $routeName);
-            $module = isset($routeNameArray[1])?$routeNameArray[1]:null;
+            $module = isset($routeNameArray[0])?$routeNameArray[0]:null;
             //$operation = isset($routeNameArray[2])?$routeNameArray[2]:null;
             $operation = removeSubString($routeName, $module);
-            $operation = str_replace('.','',$operation);
+            $operation = str_replace('.',' ',$operation);
 
             // get route
-            $routeUri = removeSubString($route['uri'], '/{id}');
+//            $routeUri = removeSubString($route['uri'], '/{id}');
+            $routeUri = $route['uri'];
 
             // check if module exist
             if ( searchInMultidimensionalArray($permissions, 'module', $module) ){
@@ -113,7 +148,9 @@ if ( ! function_exists('role_permission_array_from_route') ){
                         'module' => $module,
                         'operation' => $operation,
                         'route' => $routeUri,
-                        'is_permit' => 0
+                        'is_permit' => 0,
+                        'route_name' => $routeName,
+                        'method' => getUsualMethodName($route['methods'])
                     ];
                 }
             } else {
@@ -127,7 +164,9 @@ if ( ! function_exists('role_permission_array_from_route') ){
                             'module' => $module,
                             'operation' => $operation,
                             'route' => $routeUri,
-                            'is_permit' => 0
+                            'is_permit' => 0,
+                            'route_name' => $routeName,
+                            'method' => getUsualMethodName($route['methods'])
                         ],
                     ]
                 ];
@@ -233,7 +272,9 @@ if ( ! function_exists('permission_db_data_format') ){
                         'module'=> $value['module'],
                         'operation'=> $value['operation'],
                         'route'=> $value['route'],
-                        'is_permit'=> (int) $is_permit
+                        'is_permit'=> (int) $is_permit,
+                        'route_name' => $value['route_name'],
+                        'method' => $value['method']
                     ];
 
                 }
@@ -335,4 +376,20 @@ if ( ! function_exists('page_limit') ){
     }
 }
 
+if ( ! function_exists('getUsualMethodName') ){
+    function getUsualMethodName($methods): string
+    {
+        $methods = array_map('strtolower', $methods);
 
+        if ( in_array('get', $methods) ) return 'GET';
+        if ( in_array('post', $methods) ) return 'POST';
+        if ( in_array('put', $methods) ) return 'PUT';
+        if ( in_array('patch', $methods) ) return 'PATCH';
+        if ( in_array('delete', $methods) ) return 'DELETE';
+        if ( in_array('options', $methods) ) return 'OPTIONS';
+        if ( in_array('head', $methods) ) return 'HEAD';
+        if ( in_array('trace', $methods) ) return 'TRACE';
+        if ( in_array('connect', $methods) ) return 'CONNECT';
+        return '';
+    }
+}

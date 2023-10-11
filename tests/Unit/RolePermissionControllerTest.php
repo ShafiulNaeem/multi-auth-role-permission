@@ -126,7 +126,6 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
         $response = $this->postJson($api,$request);
         $response->assertStatus(201);
 
-        $api = "/role/create";
         $request = [
             'name' => "Staff",
             'auth_guard_id' => 1,
