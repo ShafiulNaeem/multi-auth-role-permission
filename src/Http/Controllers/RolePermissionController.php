@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Shafiulnaeem\MultiAuthRolePermission\Models\AuthGuard;
 use Shafiulnaeem\MultiAuthRolePermission\Models\Role;
 use Shafiulnaeem\MultiAuthRolePermission\Models\RolePermission;
+use Shafiulnaeem\MultiAuthRolePermission\Models\RolePermissionModification;
 use Symfony\Component\HttpFoundation\Response;
 
 class RolePermissionController extends Controller
@@ -46,7 +47,7 @@ class RolePermissionController extends Controller
             ],
             'is_admin' => 'required|boolean',
             'note' => 'nullable',
-            'role_permissions' => 'nullable|array'
+            'role_permissions' => 'required|array'
             ],
             [
                 'auth_guard_id.required' => 'The auth guard field is required.',
@@ -56,7 +57,8 @@ class RolePermissionController extends Controller
                 'is_admin.required' => 'The is admin field is required.',
                 'is_admin.boolean' => 'The is admin field must be a boolean value.',
                 'note.nullable' => 'The note field must be null or a valid value.',
-                'role_permissions.array' => 'The role permissions must be an array.',
+                'role_permissions.required' => 'The role permissions field is required.',
+                'role_permissions.array' => 'The role permissions must be an array.'
             ]
         );
 
@@ -114,7 +116,7 @@ class RolePermissionController extends Controller
             ],
             'is_admin' => 'required|boolean',
             'note' => 'nullable',
-            'role_permissions' => 'nullable|array'
+            'role_permissions' => 'required|array'
         ],
             [
                 'auth_guard_id.required' => 'The auth guard field is required.',
@@ -124,7 +126,8 @@ class RolePermissionController extends Controller
                 'is_admin.required' => 'The is admin field is required.',
                 'is_admin.boolean' => 'The is admin field must be a boolean value.',
                 'note.nullable' => 'The note field must be null or a valid value.',
-                'role_permissions.array' => 'The role permissions must be an array.',
+                'role_permissions.required' => 'The role permissions field is required.',
+                'role_permissions.array' => 'The role permissions must be an array.'
             ]
         );
 
@@ -243,7 +246,7 @@ class RolePermissionController extends Controller
 
         $role->delete();
         return sendResponse(
-            'Data deleted successfully',
+            'Data deleted successfully.',
             [],
             Response::HTTP_OK
         );
@@ -258,5 +261,102 @@ class RolePermissionController extends Controller
             permission_data($guard),
             Response::HTTP_OK
         );
+    }
+
+    public function user_permission(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'auth_user_id' => 'required|exists:auth_guards,id',
+            'role_id' => 'required|exists:roles,id',
+            'role_permissions' => 'required|array'
+        ],
+            [
+                'auth_user_id.required' => 'The auth user field is required.',
+                'auth_user_id.exists' => 'The selected auth user is invalid.',
+                'role_id.required' => 'The role field is required.',
+                'role_id.exists' => 'The selected role is invalid.',
+                'role_permissions.required' => 'The role permissions field is required.',
+                'role_permissions.array' => 'The role permissions must be an array.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return sendError('Validation error',$validator->errors()->all(),Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $auth_guard_id = $this->get_auth_guard_id($request->role_id)->auth_guard_id;
+
+        $permissions = $request->role_permissions;
+        $permissions = permission_data_format($permissions,$auth_guard_id,$request->role_id,$request->auth_user_id);
+        DB::table('role_permission_modifications')->where([
+            'role_id'=>$request->role_id,
+            'auth_user_id'=>$request->auth_user_id,
+            'auth_guard_id'=>$auth_guard_id
+        ])->delete();
+        DB::table('role_permission_modifications')->insert($permissions);
+
+        return sendResponse(
+            'Permission added successfully.',
+            [],
+            Response::HTTP_OK
+        );
+    }
+    public function get_auth_guard_id($role_id)
+    {
+        return DB::table('roles')
+            ->join('auth_guards','auth_guards.id','=','roles.auth_guard_id')
+            ->where('roles.id',$role_id)
+            ->select('auth_guards.name as auth_guard','roles.auth_guard_id')
+            ->first();
+    }
+    public function get_user_permission_list(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'auth_user_id' => 'required|exists:auth_guards,id',
+            'role_id' => 'required|exists:roles,id'
+        ],
+            [
+                'auth_user_id.required' => 'The auth user field is required.',
+                'auth_user_id.exists' => 'The selected auth user is invalid.',
+                'role_id.required' => 'The role field is required.',
+                'role_id.exists' => 'The selected role is invalid.'
+            ]
+        );
+
+        if ($validator->fails()) {
+            return sendError('Validation error',$validator->errors()->all(),Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $auth_guard = $this->get_auth_guard_id($request->role_id);
+
+        $permissions = [];
+
+        if (DB::table('role_permission_modifications')->where([
+            'role_id'=>$request->role_id,
+            'auth_user_id'=>$request->auth_user_id,
+            'auth_guard_id'=>$auth_guard->auth_guard_id
+        ])->count() > 0){
+            $permissions = permission_db_data_format(
+                RolePermissionModification::where([
+                    'role_id'=>$request->role_id,
+                    'auth_user_id'=>$request->auth_user_id,
+                    'auth_guard_id'=>$auth_guard->auth_guard_id
+                ])->get()->toArray(),
+                $auth_guard->auth_guard);
+        }else{
+            $permissions = permission_db_data_format(
+                RolePermission::where([
+                    'role_id'=>$request->role_id,
+                    'auth_guard_id'=>$auth_guard->auth_guard_id
+                ])->get()->toArray(),
+                $auth_guard->auth_guard);
+        }
+
+        return sendResponse(
+            'Permission data fetch successfully.',
+            $permissions,
+            Response::HTTP_OK
+        );
+
     }
 }
