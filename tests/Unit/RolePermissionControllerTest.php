@@ -141,6 +141,7 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
         $response = $this->get('/role/list');
         $response->assertStatus(200);
         $response->assertSeeText('Data fetch successfully.');
+        dd($response->content());
     }
     private function show()
     {
@@ -149,17 +150,65 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
 //        $response->assertSeeText('Data not found.');
         $response->assertSeeText('Data fetch successfully.');
     }
+    public function delete()
+    {
+//        $response = $this->delete('role/delete/1', Role::where('id',1)->first()->toArray(), array $headers = []);
+//        $this->assertEquals(200, $response->getStatusCode());
+    }
     private function update()
     {
+        $api = "/role/update/2";
+        $request = [
+            'name' => "Main",
+            'auth_guard_id' => 1,
+            'is_admin' => true,
+            'note' => null,
+            'role_permissions' => permission_data('web')
+        ];
+        $response = $this->putJson($api,$request);
+        $response->assertStatus(200);
+    }
+    public function permission_list()
+    {
+        $user = Customer::factory()->create();
+        $this->assertTrue($user->save());
+
+        $api = "/role/user/permission/list";
+        $request = [
+            'auth_user_id' => 1,
+            'role_id' => 2
+        ];
+        $response = $this->postJson($api,$request);
+        $response->assertStatus(200);
+    }
+    public function permission()
+    {
+        $api = "/role/user/permission/add";
+        $request = [
+            'auth_user_id' => 1,
+            'role_id' => 2,
+            'role_permissions' => permission_data('web')
+        ];
+        $response = $this->postJson($api,$request);
+        $response->assertStatus(200);
 
     }
     public function test_role()
     {
         // create role with permission
         $this->create();
-        // list check
-        $this->list();
         // show data
         $this->show();
+        // add permission
+        $this->permission();
+        // user permission list
+        $this->permission_list();
+        // update
+        $this->update();
+        //delete
+        $this->delete();
+        // list check
+        $this->list();
+
     }
 }

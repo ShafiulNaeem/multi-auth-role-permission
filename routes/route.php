@@ -18,20 +18,17 @@ Route::get('/guards', function () {
     );
 });
 
-/*
- * guard wise route list
-*/
-Route::get('role/permission/module/{guard}', [RolePermissionController::class, 'module_permission'])->name('module.route.list');
-
-/*
-* role route
-*/
 Route::group(['prefix' => 'role', 'as' => 'role.'], function () {
+    //guard wise route list
+    Route::get('permission/module/{guard}', [RolePermissionController::class, 'module_permission'])->name('module.route.list');
+
     Route::get('/list', [RolePermissionController::class, 'index'])->name('list');
     Route::post('/create', [RolePermissionController::class, 'store'])->name('create');
     Route::get('/show/{id}', [RolePermissionController::class, 'show'])->name('show');
     Route::put('/update/{id}', [RolePermissionController::class, 'update'])->name('update');
     Route::delete('/delete/{id}', [RolePermissionController::class, 'destroy'])->name('delete');
+    Route::post('/user/permission/add', [RolePermissionController::class, 'user_permission'])->name('user.permission.add');
+    Route::post('/user/permission/list', [RolePermissionController::class, 'get_user_permission_list'])->name('user.permission.list');
 });
 
 Route::middleware('check.auth:web')->group(function () {

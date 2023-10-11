@@ -288,6 +288,59 @@ if ( ! function_exists('permission_db_data_format') ){
         return $result;
     }
 }
+
+if ( ! function_exists('permission_db_data_format_v_two') ){
+    /**
+     * @param $data
+     * @return Array,
+     */
+    function permission_db_data_format_v_two($data,$guard){
+        $modules = array();
+        $result = array();
+        $permission_data = permission_data($guard);
+
+        foreach ($permission_data as $per=>$permission_datum){
+            $array = array();
+            if (count($permission_datum['permission']) > 0){
+                foreach ($permission_datum['permission'] as $pd=>$value){
+                    $auth_guard_id = 0;
+                    $role_id = 0;
+                    $user_id = 0;
+                    $is_permit = 0;
+
+                    if ($data->count() > 0){
+                        $auth_guard_id = $data[0]->auth_guard_id;
+                        $role_id = $data[0]->role_id;
+                        $user_id = $data[0]->auth_user_id;
+
+                        $search = array_search($value['route'], array_column($data, 'route'));
+                        if (!is_bool($search)){
+                            $is_permit = $data[$search]['is_permit'];
+                        }
+                    }
+
+                    $array[] = [
+                        'auth_guard_id'=> (int) $auth_guard_id,
+                        'role_id'=> (int) $role_id,
+                        'auth_user_id'=> (int) $user_id,
+                        'module'=> $value['module'],
+                        'operation'=> $value['operation'],
+                        'route'=> $value['route'],
+                        'is_permit'=> (int) $is_permit
+                    ];
+
+                }
+            }
+
+            $result[] = [
+                'module' => $permission_datum['module'],
+                'permission' => $array
+            ];
+        }
+        return $result;
+    }
+}
+
 if ( ! function_exists('permission_data_format') ){
     /**
      * @param $data,$role_id
