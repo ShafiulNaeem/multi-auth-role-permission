@@ -28,7 +28,7 @@ class PackageServiceProvider extends ServiceProvider
     }
     private function migration()
     {
-        //$this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
     private function command(){
         // Register the command if we are using the application via the CLI
