@@ -2,4 +2,4 @@
 /.idea
 /.phpunit.cache
 .phpunit.result.cache
-*.lock
+composer.lock
