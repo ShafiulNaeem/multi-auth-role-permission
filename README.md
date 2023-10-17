@@ -81,7 +81,7 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
     });
   });
   ```
-- For guard wise route permission list use bellow route..
+- For guard wise route permission list use bellow route.
   ```shell
   use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
   Route::get('permission/{guard}', [RolePermissionController::class, 'module_permission'])->name('permission.list');
@@ -123,7 +123,7 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
     "errors": []
     }
   ```
-  - Role CRUD route
+- Role CRUD route
   ```shell
   use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
   Route::group(['prefix' => 'role', 'as' => 'role.'], function () {
@@ -142,7 +142,7 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
     "role_id" : 2,
     "name" : "admin",
     "is_admin" : 0,
-    "role_permissions" : [
+    "role_permissions" : [ // permission data from 'permission/{guard}' api.
         {
          "module": "test",
          "permission": [
@@ -152,7 +152,7 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
                     "auth_user_id": 0,
                     "module": "test",
                     "operation": " a",
-                    "route": "api/test/a",
+                    "route": "test/a",
                     "is_permit": 0,
                     "route_name": "test.a",
                     "method": "GET"
@@ -163,34 +163,7 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
                     "auth_user_id": 0,
                     "module": "test",
                     "operation": " b",
-                    "route": "api/test/b",
-                    "is_permit": 0,
-                    "route_name": "test.b",
-                    "method": "GET"
-                }
-            ]
-        },
-        {
-         "module": "test",
-         "permission": [
-                {
-                    "auth_guard_id": 0,
-                    "role_id": 0,
-                    "auth_user_id": 0,
-                    "module": "test",
-                    "operation": " a",
-                    "route": "api/test/a",
-                    "is_permit": 0,
-                    "route_name": "test.a",
-                    "method": "GET"
-                },
-                {
-                    "auth_guard_id": 0,
-                    "role_id": 0,
-                    "auth_user_id": 0,
-                    "module": "test",
-                    "operation": " b",
-                    "route": "api/test/b",
+                    "route": "test/b",
                     "is_permit": 0,
                     "route_name": "test.b",
                     "method": "GET"
