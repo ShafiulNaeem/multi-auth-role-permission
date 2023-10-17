@@ -9,7 +9,7 @@ use Shafiulnaeem\MultiAuthRolePermission\Models\Role;
 
 class CreateAuth extends Command
 {
-    protected $signature = 'createauthguard:authguard {name}';
+    protected $signature = 'add:auth {name}';
 
     protected $description = 'create auth guard.';
 
