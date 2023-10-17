@@ -5,7 +5,7 @@
 * [Installation](#installation)
 
 ## Description
-Multi-Auth Role Permission Package is a versatile solution . With this package, you can establish various user roles, each with specific permissions, and empower users to customize their permissions beyond their assigned roles. It's a user-friendly way to create a secure and flexible access control system within your Laravel project.
+**Multi-Auth Role Permission** is a versatile Laravel package designed to create a robust and flexible access control system. This package enables you to define user roles with specific permissions and allows users to customize their permissions beyond their assigned roles. It's a user-friendly solution to enhance the security and control of your Laravel project.
 
 ## Installation
 👉 To install this package, you'll need to have Laravel version 9 or higher and PHP version 8.0.0 or higher installed on your machine. You can download the latest version of PHP from the official PHP resource: https://www.php.net/downloads.php. Ensure your environment meets these requirements before proceeding with the installation.
