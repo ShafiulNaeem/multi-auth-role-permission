@@ -132,8 +132,6 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
     Route::get('/show/{id}', [RolePermissionController::class, 'show'])->name('show');
     Route::put('/update/{id}', [RolePermissionController::class, 'update'])->name('update');
     Route::delete('/delete/{id}', [RolePermissionController::class, 'destroy'])->name('delete');
-    Route::post('/user/permission/add', [RolePermissionController::class, 'user_permission'])->name('user.permission.add');
-    Route::post('/user/permission/list', [RolePermissionController::class, 'get_user_permission_list'])->name('user.permission.list');
   });
 
   // example: Request data for role create and update 
@@ -153,7 +151,7 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
                     "module": "test",
                     "operation": " a",
                     "route": "test/a",
-                    "is_permit": 0,
+                    "is_permit": 1, // 1 means add permission for test.a route
                     "route_name": "test.a",
                     "method": "GET"
                 },
@@ -164,7 +162,59 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
                     "module": "test",
                     "operation": " b",
                     "route": "test/b",
-                    "is_permit": 0,
+                    "is_permit": 0, // 0 means permission not added
+                    "route_name": "test.b",
+                    "method": "GET"
+                }
+            ]
+        }
+    ]
+  }
+  ```
+- user permission list from bellow route 
+  ```shell
+  use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
+   Route::post('/user/permission/list', [RolePermissionController::class, 'get_user_permission_list'])->name('user.permission.list');
+
+  // example: Request data
+  {
+    "auth_user_id" : 1, // from '/gurds'  api.
+    "role_id" : 1
+  }
+  ```
+
+- Assaign user permission using bellow route 
+  ```shell
+  use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
+  Route::post('/user/permission/add', [RolePermissionController::class, 'user_permission'])->name('user.permission.add');
+
+  // example: Request data
+  {
+    "auth_user_id" : 1, // from '/gurds'  api.
+    "role_id" : 2,
+    "role_permissions" : [ // permission data from 'user/permission/list' api.
+        {
+         "module": "test",
+         "permission": [
+                {
+                    "auth_guard_id": 0,
+                    "role_id": 0,
+                    "auth_user_id": 0,
+                    "module": "test",
+                    "operation": " a",
+                    "route": "test/a",
+                    "is_permit": 1, // 1 means permission added
+                    "route_name": "test.a",
+                    "method": "GET"
+                },
+                {
+                    "auth_guard_id": 0,
+                    "role_id": 0,
+                    "auth_user_id": 0,
+                    "module": "test",
+                    "operation": " b",
+                    "route": "test/b",
+                    "is_permit": 0, // 0 means permission not added
                     "route_name": "test.b",
                     "method": "GET"
                 }
