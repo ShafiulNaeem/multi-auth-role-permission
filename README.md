@@ -16,7 +16,30 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
 - Add auth guards:
   ``` php artisan add:auth your-guard ```
 
-- After add auth guard, hit  ``` applicatoin_url/guards ```  url for guard list.
+- After add auth guard, hit  ``` applicatoin_url/guards ``` get api for guard list.
+  example:
+   ```
+   {
+    "code": 200,
+    "success": true,
+    "message": "Data fetch successfully.",
+    "data": [
+            {
+                "id": 1
+                "name": "admin",
+                "created_at": "2023-10-12T08:27:57.000000Z",
+                "updated_at": "2023-10-12T08:27:57.000000Z",
+            },
+            {
+                "id": 2,
+                "name": "customer",
+                "created_at": "2023-10-12T08:27:51.000000Z",
+                "updated_at": "2023-10-12T08:27:51.000000Z",
+            }
+     ],
+    "errors": []
+    }
+   ```
 - Follow bellow route pattern for permissions
 
   ```shell
@@ -31,4 +54,149 @@ Multi-Auth Role Permission Package is a versatile solution . With this package, 
         });
     });
   });
+  
+  // example: if you have two guards like admin and customer then pattern like bellow
+  // for admin
+  Route::middleware('check.auth:admin')->group(function () {
+  // users can access this block routes after login  
+    Route::middleware('permission:admin')->group(function () {
+  // user can access this block routes if user loggedin and if user have permission 
+  // demo routes
+        Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
+            Route::get('/a', function () { return 'ok'; })->name('a');
+            Route::get('/b', function () { return 'ok'; })->name('b');
+        });
+    });
+  });
+  // for customer
+  Route::middleware('check.auth:customer')->group(function () {
+  // users can access this block routes after login  
+    Route::middleware('permission:customer')->group(function () {
+  // user can access this block routes if user loggedin and if user have permission 
+  // demo routes
+        Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
+            Route::get('/a', function () { return 'ok'; })->name('a');
+            Route::get('/b', function () { return 'ok'; })->name('b');
+        });
+    });
+  });
+  ```
+- For guard wise route permission list use bellow route..
+  ```shell
+  use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
+  Route::get('permission/{guard}', [RolePermissionController::class, 'module_permission'])->name('permission.list');
+
+  // example: response for admin guard
+  {
+    "code": 200,
+    "success": true,
+    "message": "Data fetch successfully.",
+    "data": [
+         {
+         "module": "test",
+         "permission": [
+                {
+                    "auth_guard_id": 0,
+                    "role_id": 0,
+                    "auth_user_id": 0,
+                    "module": "test",
+                    "operation": " a",
+                    "route": "test/a",
+                    "is_permit": 0,
+                    "route_name": "test.a",
+                    "method": "GET"
+                },
+                {
+                    "auth_guard_id": 0,
+                    "role_id": 0,
+                    "auth_user_id": 0,
+                    "module": "test",
+                    "operation": " b",
+                    "route": "test/b",
+                    "is_permit": 0,
+                    "route_name": "test.b",
+                    "method": "GET"
+                }
+            ]
+        },
+     ],
+    "errors": []
+    }
+  ```
+  - Role CRUD route
+  ```shell
+  use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
+  Route::group(['prefix' => 'role', 'as' => 'role.'], function () {
+    Route::get('/list', [RolePermissionController::class, 'index'])->name('list');
+    Route::post('/create', [RolePermissionController::class, 'store'])->name('create');
+    Route::get('/show/{id}', [RolePermissionController::class, 'show'])->name('show');
+    Route::put('/update/{id}', [RolePermissionController::class, 'update'])->name('update');
+    Route::delete('/delete/{id}', [RolePermissionController::class, 'destroy'])->name('delete');
+    Route::post('/user/permission/add', [RolePermissionController::class, 'user_permission'])->name('user.permission.add');
+    Route::post('/user/permission/list', [RolePermissionController::class, 'get_user_permission_list'])->name('user.permission.list');
+  });
+
+  // example: Request data for role create and update 
+  {
+    "auth_guard_id" : 1, // from '/gurds'  api.
+    "role_id" : 2,
+    "name" : "admin",
+    "is_admin" : 0,
+    "role_permissions" : [
+        {
+         "module": "test",
+         "permission": [
+                {
+                    "auth_guard_id": 0,
+                    "role_id": 0,
+                    "auth_user_id": 0,
+                    "module": "test",
+                    "operation": " a",
+                    "route": "api/test/a",
+                    "is_permit": 0,
+                    "route_name": "test.a",
+                    "method": "GET"
+                },
+                {
+                    "auth_guard_id": 0,
+                    "role_id": 0,
+                    "auth_user_id": 0,
+                    "module": "test",
+                    "operation": " b",
+                    "route": "api/test/b",
+                    "is_permit": 0,
+                    "route_name": "test.b",
+                    "method": "GET"
+                }
+            ]
+        },
+        {
+         "module": "test",
+         "permission": [
+                {
+                    "auth_guard_id": 0,
+                    "role_id": 0,
+                    "auth_user_id": 0,
+                    "module": "test",
+                    "operation": " a",
+                    "route": "api/test/a",
+                    "is_permit": 0,
+                    "route_name": "test.a",
+                    "method": "GET"
+                },
+                {
+                    "auth_guard_id": 0,
+                    "role_id": 0,
+                    "auth_user_id": 0,
+                    "module": "test",
+                    "operation": " b",
+                    "route": "api/test/b",
+                    "is_permit": 0,
+                    "route_name": "test.b",
+                    "method": "GET"
+                }
+            ]
+        }
+    ]
+  }
   ```
