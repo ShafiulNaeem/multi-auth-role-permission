@@ -50,15 +50,15 @@ class RolePermissionController extends Controller
             'role_permissions' => 'required|array'
             ],
             [
-                'auth_guard_id.required' => 'The auth guard field is required.',
-                'auth_guard_id.exists' => 'The selected auth guard is invalid.',
-                'name.required' => 'The name field is required.',
-                'name.unique' => 'The name has already been taken for the selected auth guard.',
-                'is_admin.required' => 'The is admin field is required.',
-                'is_admin.boolean' => 'The is admin field must be a boolean value.',
-                'note.nullable' => 'The note field must be null or a valid value.',
-                'role_permissions.required' => 'The role permissions field is required.',
-                'role_permissions.array' => 'The role permissions must be an array.'
+                'auth_guard_id.required' => 'Auth guard field is required.',
+                'auth_guard_id.exists' => 'Selected auth guard is invalid.',
+                'name.required' => 'Role name field is required.',
+                'name.unique' => 'Role name has already been taken for the selected auth guard.',
+                'is_admin.required' => 'Is admin  field is required.',
+                'is_admin.boolean' => 'Is admin field must be a boolean value.',
+                'note.nullable' => 'Note field must be null or a valid value.',
+                'role_permissions.required' => 'Role permissions field is required.',
+                'role_permissions.array' => 'Role permissions must be an array.'
             ]
         );
 
@@ -137,15 +137,15 @@ class RolePermissionController extends Controller
             'role_permissions' => 'required|array'
         ],
             [
-                'auth_guard_id.required' => 'The auth guard field is required.',
-                'auth_guard_id.exists' => 'The selected auth guard is invalid.',
-                'name.required' => 'The name field is required.',
-                'name.unique' => 'The name has already been taken for the selected auth guard.',
-                'is_admin.required' => 'The is admin field is required.',
-                'is_admin.boolean' => 'The is admin field must be a boolean value.',
-                'note.nullable' => 'The note field must be null or a valid value.',
-                'role_permissions.required' => 'The role permissions field is required.',
-                'role_permissions.array' => 'The role permissions must be an array.'
+                'auth_guard_id.required' => 'Auth guard field is required.',
+                'auth_guard_id.exists' => 'Selected auth guard is invalid.',
+                'name.required' => 'Role name field is required.',
+                'name.unique' => 'Role name has already been taken for the selected auth guard.',
+                'is_admin.required' => 'Is admin  field is required.',
+                'is_admin.boolean' => 'Is admin field must be a boolean value.',
+                'note.nullable' => 'Note field must be null or a valid value.',
+                'role_permissions.required' => 'Role permissions field is required.',
+                'role_permissions.array' => 'Role permissions must be an array.'
             ]
         );
 
