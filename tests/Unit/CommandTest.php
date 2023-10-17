@@ -67,7 +67,7 @@ class CommandTest extends \Shafiulnaeem\MultiAuthRolePermission\Tests\TestCase
 
     public function test_command()
     {
-        $this->artisan('createauthguard:authguard backend')->assertSuccessful();
+        $this->artisan('add:auth backend')->assertSuccessful();
         dd(AuthGuard::all(),Role::all());
     }
 }
