@@ -63,26 +63,44 @@ class RolePermissionController extends Controller
         );
 
         if ($validator->fails()) {
-            return sendError('Validation error',$validator->errors()->all(),Response::HTTP_UNPROCESSABLE_ENTITY);
+            return sendError('Validation error',$validator->errors()->toArray(),Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $role = Role::create([
-            'auth_guard_id' => $request->auth_guard_id,
-            'name' => $request->name,
-            'is_admin' => $request->is_admin,
-            'note' => $request->note
-        ]);
+        try {
+            DB::beginTransaction();
 
-        // create permission
-        $permissions = $request->role_permissions;
-        $permissions = permission_data_format($permissions,$request->auth_guard_id,$role->id,0);
-        RolePermission::insert($permissions);
+            $role = Role::create([
+                'auth_guard_id' => $request->auth_guard_id,
+                'name' => $request->name,
+                'is_admin' => $request->is_admin,
+                'note' => $request->note
+            ]);
 
-        return sendResponse(
-            'Data inserted successfully.',
-            $this->mainQuery()->where('roles.id',$role->id)->first(),
-            Response::HTTP_CREATED
-        );
+            // create permission
+            $permissions = $request->role_permissions;
+            $permissions = permission_data_format($permissions,$request->auth_guard_id,$role->id,0);
+            RolePermission::insert($permissions);
+
+            DB::commit();
+
+            return sendResponse(
+                'Data inserted successfully.',
+                $this->mainQuery()->where('roles.id',$role->id)->first(),
+                Response::HTTP_CREATED
+            );
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return sendError(
+                'something went wrong',
+                [
+                    'error' => $exception->getMessage(),
+                    'line' => $exception->getLine(),
+                    'file' => $exception->getFile(),
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
     public function show($id)
     {
@@ -132,7 +150,7 @@ class RolePermissionController extends Controller
         );
 
         if ($validator->fails()) {
-            return sendError('Validation error',$validator->errors()->all(),Response::HTTP_UNPROCESSABLE_ENTITY);
+            return sendError('Validation error',$validator->errors()->toArray(),Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $role = Role::find($id);
@@ -144,43 +162,60 @@ class RolePermissionController extends Controller
             );
         }
 
-        $role->update([
-            'auth_guard_id'=> $request->auth_guard_id,
-            'name'=> $request->name,
-            'is_admin'=> $request->is_admin,
-            'note'=> $request->note
-        ]);
-        $role_id = $id;
+        try {
+            DB::beginTransaction();
+            $role->update([
+                'auth_guard_id'=> $request->auth_guard_id,
+                'name'=> $request->name,
+                'is_admin'=> $request->is_admin,
+                'note'=> $request->note
+            ]);
+            $role_id = $id;
 
-        // current permissions
-        $permissions = $request->role_permissions;
-        $permissions = permission_data_format($permissions,$request->auth_guard_id,$role_id,0);
-        // previous permissions
-        $previous_permissions = $role->load('rolePermissions')->toArray()['role_permissions'];
-        // difference between previous and current permissions
-        $permissions_difference= $this->permissions_difference($previous_permissions,$permissions,$request->auth_guard_id,$id);
+            // current permissions
+            $permissions = $request->role_permissions;
+            $permissions = permission_data_format($permissions,$request->auth_guard_id,$role_id,0);
+            // previous permissions
+            $previous_permissions = $role->load('rolePermissions')->toArray()['role_permissions'];
+            // difference between previous and current permissions
+            $permissions_difference= $this->permissions_difference($previous_permissions,$permissions,$request->auth_guard_id,$id);
 
-        // create permission
-        DB::table('role_permissions')->where('role_id',$id)->delete();
-        DB::table('role_permissions')->insert($permissions);
+            // create permission
+            DB::table('role_permissions')->where('role_id',$id)->delete();
+            DB::table('role_permissions')->insert($permissions);
 
-        $permission_staff = DB::table('role_permission_modifications')
-            ->select('auth_guard_id','role_id','auth_user_id','module','operation','route','is_permit','url', 'route_name', 'method')
-            ->where('role_id',$id)->get()->toArray();
+            $permission_staff = DB::table('role_permission_modifications')
+                ->select('auth_guard_id','role_id','auth_user_id','module','operation','route','is_permit','url', 'route_name', 'method')
+                ->where('role_id',$id)->get()->toArray();
 
-        if (count($permission_staff) > 0){
-            $staff_permission_data = $this->updateStaffpermission($permissions_difference,$permission_staff,$request->auth_guard_id,$id);
-            if (count($staff_permission_data) > 0){
-                DB::table('role_permission_modifications')->where('role_id',$id)->delete();
-                DB::table('role_permission_modifications')->insert($staff_permission_data);
+            if (count($permission_staff) > 0){
+                $staff_permission_data = $this->updateStaffpermission($permissions_difference,$permission_staff,$request->auth_guard_id,$id);
+                if (count($staff_permission_data) > 0){
+                    DB::table('role_permission_modifications')->where('role_id',$id)->delete();
+                    DB::table('role_permission_modifications')->insert($staff_permission_data);
+                }
             }
-        }
 
-        return sendResponse(
-            'Data updated successfully.',
-            $this->mainQuery()->where('roles.id',$id)->first(),
-            Response::HTTP_OK
-        );
+            DB::commit();
+
+            return sendResponse(
+                'Data updated successfully.',
+                $this->mainQuery()->where('roles.id',$id)->first(),
+                Response::HTTP_OK
+            );
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return sendError(
+                'something went wrong',
+                [
+                    'error' => $exception->getMessage(),
+                    'line' => $exception->getLine(),
+                    'file' => $exception->getFile(),
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
     public function permissions_difference($previous_permissions, $current_permissions,$auth_guard_id,$role_id)
     {
@@ -286,25 +321,43 @@ class RolePermissionController extends Controller
         );
 
         if ($validator->fails()) {
-            return sendError('Validation error',$validator->errors()->all(),Response::HTTP_UNPROCESSABLE_ENTITY);
+            return sendError('Validation error',$validator->errors()->toArray(),Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $auth_guard_id = $this->get_auth_guard_id($request->role_id)->auth_guard_id;
+        try {
+            DB::beginTransaction();
 
-        $permissions = $request->role_permissions;
-        $permissions = permission_data_format($permissions,$auth_guard_id,$request->role_id,$request->auth_user_id);
-        DB::table('role_permission_modifications')->where([
-            'role_id'=>$request->role_id,
-            'auth_user_id'=>$request->auth_user_id,
-            'auth_guard_id'=>$auth_guard_id
-        ])->delete();
-        DB::table('role_permission_modifications')->insert($permissions);
+            $auth_guard_id = $this->get_auth_guard_id($request->role_id)->auth_guard_id;
 
-        return sendResponse(
-            'Permission added successfully.',
-            [],
-            Response::HTTP_OK
-        );
+            $permissions = $request->role_permissions;
+            $permissions = permission_data_format($permissions,$auth_guard_id,$request->role_id,$request->auth_user_id);
+            DB::table('role_permission_modifications')->where([
+                'role_id'=>$request->role_id,
+                'auth_user_id'=>$request->auth_user_id,
+                'auth_guard_id'=>$auth_guard_id
+            ])->delete();
+            DB::table('role_permission_modifications')->insert($permissions);
+
+            DB::commit();
+
+            return sendResponse(
+                'Permission added successfully.',
+                [],
+                Response::HTTP_OK
+            );
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return sendError(
+                'something went wrong',
+                [
+                    'error' => $exception->getMessage(),
+                    'line' => $exception->getLine(),
+                    'file' => $exception->getFile(),
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
     public function get_auth_guard_id($role_id)
     {
@@ -329,7 +382,7 @@ class RolePermissionController extends Controller
         );
 
         if ($validator->fails()) {
-            return sendError('Validation error',$validator->errors()->all(),Response::HTTP_UNPROCESSABLE_ENTITY);
+            return sendError('Validation error',$validator->errors()->toArray(),Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $auth_guard = $this->get_auth_guard_id($request->role_id);

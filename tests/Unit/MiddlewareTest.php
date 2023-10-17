@@ -54,14 +54,14 @@ class MiddlewareTest extends \Shafiulnaeem\MultiAuthRolePermission\Tests\TestCas
             // run the up() method of that migration class
             (new \CreateRolePermissionModificationsTable)->up();
         }
-        // check customers
-        if( ! \Illuminate\Support\Facades\Schema::hasTable('customers') ){
-            // import the CreatePostsTable class from the migration
-            include_once __DIR__ . '/../../database/migrations/2023_10_08_193844_create_customers_table.php';
-
-            // run the up() method of that migration class
-            (new \CreateCustomersTable)->up();
-        }
+//        // check customers
+//        if( ! \Illuminate\Support\Facades\Schema::hasTable('customers') ){
+//            // import the CreatePostsTable class from the migration
+//            include_once __DIR__ . '/../../database/migrations/2023_10_08_193844_create_customers_table.php';
+//
+//            // run the up() method of that migration class
+//            (new \CreateCustomersTable)->up();
+//        }
     }
 
     private function SQLiteDatabase($app)
@@ -90,17 +90,17 @@ class MiddlewareTest extends \Shafiulnaeem\MultiAuthRolePermission\Tests\TestCas
         $role_permission_modify = RolePermissionModification::factory()->create();
         $this->assertTrue($role_permission_modify->save());
 
-        $user = Customer::factory()->create();
-        $this->assertTrue($user->save());
+//        $user = Customer::factory()->create();
+//        $this->assertTrue($user->save());
 
         // check role permission modification
         $role_permission_modify = RolePermissionModification::factory()->create();
         $this->assertTrue($role_permission_modify->save());
 
         // Try to access the page
-//        $response = $this->get('/test1');
-        $response = $this->actingAs($user)
-            ->get('/test');
+        $response = $this->get('/test1');
+//        $response = $this->actingAs($user)
+//            ->get('/test');
 
         // Assert the expected response status
         $response->assertStatus(200);

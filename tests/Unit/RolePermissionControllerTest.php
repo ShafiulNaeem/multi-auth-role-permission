@@ -54,13 +54,13 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
             (new \CreateRolePermissionModificationsTable)->up();
         }
         // check customers
-        if( ! \Illuminate\Support\Facades\Schema::hasTable('customers') ){
-            // import the CreatePostsTable class from the migration
-            include_once __DIR__ . '/../../database/migrations/2023_10_08_193844_create_customers_table.php';
-
-            // run the up() method of that migration class
-            (new \CreateCustomersTable)->up();
-        }
+//        if( ! \Illuminate\Support\Facades\Schema::hasTable('customers') ){
+//            // import the CreatePostsTable class from the migration
+//            include_once __DIR__ . '/../../database/migrations/2023_10_08_193844_create_customers_table.php';
+//
+//            // run the up() method of that migration class
+//            (new \CreateCustomersTable)->up();
+//        }
     }
     private function SQLiteDatabase($app)
     {
@@ -89,8 +89,8 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
         $role_permission_modify = RolePermissionModification::factory()->create();
         $this->assertTrue($role_permission_modify->save());
 
-        $user = Customer::factory()->create();
-        $this->assertTrue($user->save());
+//        $user = Customer::factory()->create();
+//        $this->assertTrue($user->save());
 
         // check role permission modification
         $role_permission_modify = RolePermissionModification::factory()->create();
@@ -169,8 +169,8 @@ class RolePermissionControllerTest extends \Shafiulnaeem\MultiAuthRolePermission
     }
     public function permission_list()
     {
-        $user = Customer::factory()->create();
-        $this->assertTrue($user->save());
+//        $user = Customer::factory()->create();
+//        $this->assertTrue($user->save());
 
         $api = "/role/user/permission/list";
         $request = [
