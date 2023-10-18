@@ -68,7 +68,7 @@
   ```
 
 
-- Suppose you have two ```auth``` like ```admin``` and ```customer```. Then you can use bellow route pattern for permission.
+- Suppose you have two ```auth guards``` like ```admin``` and ```customer```. Then you can use bellow route pattern for permission.
 
    
   - For admin.
