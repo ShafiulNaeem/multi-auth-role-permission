@@ -49,10 +49,10 @@
 - Follow bellow route middleware pattern for permissions. User must be login for access the routes. 
 
   ```php
-  // users can access this block routes after login  
   Route::middleware('check.auth:{your-guard}')->group(function () {
-    // user can access this block routes if user logged in and if user have permission to access this page 
+  // users can access this block routes after login   
     Route::middleware('permission:{your-guard}')->group(function () {
+    // user can access this block routes if user logged in and if user have permission
         // demo route
         Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
             Route::get('/index', function () { 
@@ -78,10 +78,11 @@
   ```php
     // example: if you have two guards like admin and customer then pattern like bellow
     // for admin
-    // users can access this block routes after login  
+    
     Route::middleware('check.auth:admin')->group(function () {
-        // user can access this block routes if user loggedin and if user have permission 
+    // users can access this block routes after login   
         Route::middleware('permission:admin')->group(function () {
+        // user can access this block routes if user logged in and if user have permission
           // demo routes
           Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
             Route::get('/admin/dashboard', function () { 
@@ -101,11 +102,11 @@
   - For customer
   
   ```php
-    // for customer
-    // users can access this block routes after login  
+    // for customer 
     Route::middleware('check.auth:customer')->group(function () {
-      // user can access this block routes if user loggedin and if user have permission 
+    // users can access this block routes after login 
       Route::middleware('permission:customer')->group(function () {
+      // user can access this block routes if user loggedin and if user have permission 
           // demo routes
           Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
             Route::get('/profile', function () {
@@ -167,7 +168,6 @@
 
 - Role CRUD route
   ```php
-  // example: Request data for role create and update
   use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
   Route::group(['prefix' => 'role', 'as' => 'role.'], function () {
     Route::get('/list', [RolePermissionController::class, 'index'])->name('list');
