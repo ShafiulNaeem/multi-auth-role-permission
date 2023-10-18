@@ -76,9 +76,6 @@
   - For admin.
   
   ```php
-    // example: if you have two guards like admin and customer then pattern like bellow
-    // for admin
-    
     Route::middleware('check.auth:admin')->group(function () {
     // users can access this block routes after login   
         Route::middleware('permission:admin')->group(function () {
@@ -102,7 +99,6 @@
   - For customer
   
   ```php
-    // for customer 
     Route::middleware('check.auth:customer')->group(function () {
     // users can access this block routes after login 
       Route::middleware('permission:customer')->group(function () {
