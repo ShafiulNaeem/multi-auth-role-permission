@@ -116,7 +116,7 @@
     });
   ```
 
-  - For guard wise route permission list use bellow route. <br/>
+- For guard wise route permission list use bellow route. <br/>
    ```php
      use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
      Route::get('permission/module/{guard}', [RolePermissionController::class, 'module_permission'])->name('permission.route.list');
@@ -159,7 +159,7 @@
     }
   ```
 
-  - Role CRUD route
+- Role CRUD route
   ```php
   // example: Request data for role create and update
   use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
