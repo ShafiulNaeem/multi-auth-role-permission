@@ -17,10 +17,12 @@
 - Install auth package in laravel project (passport,JWT etc).
 - Install package:
   ``` composer require shafiulnaeem/multi-auth-role-permission ```
+- Run migrate command: ``` php artisan migrate ```
 - Add auth guards:
   ``` php artisan add:auth {your-guard-name} ```
 
 - After add auth guard, hit  ``` applicatoin_url/guards ``` get api for guard list.
+  ` GET ` [http://localhost:8000/guards]( http://localhost:8000/guards )
   example:
    ```json
    {
@@ -115,7 +117,10 @@
   ```
 
   - For guard wise route permission list use bellow route. <br/>
-    ` GET ` [http://localhost:8000/permission/{guard}]( http://localhost:8000/permission/{guard} )
+   ```php
+     use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
+     Route::get('permission/module/{guard}', [RolePermissionController::class, 'module_permission'])->name('permission.route.list');
+   ```
   ```json
   {
     "code": 200,
@@ -204,7 +209,10 @@
   }
   ```
 - user permission list from bellow route <br />
-    `GET`[http://localhost:8000/user/permission/list]( http://localhost:8000/user/permission/list )
+  ```php
+   use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
+   Route::post('/user/permission/list', [RolePermissionController::class, 'get_user_permission_list'])->name('user.permission.list');
+  ```
   ```json
   // example: Request data
   {
@@ -213,11 +221,12 @@
   }
   ```
 
-- Assaign user permission using bellow route 
-  ```shell
-  use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
-  Route::post('/user/permission/add', [RolePermissionController::class, 'user_permission'])->name('user.permission.add');
-
+- Assaign user permission using bellow route
+  ```php
+   use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
+   Route::post('/user/permission/add', [RolePermissionController::class, 'user_permission'])->name('user.permission.add');
+  ```
+  ```json
   // example: Request data
   {
     "auth_user_id" : 1, // from '/gurds'  api.
