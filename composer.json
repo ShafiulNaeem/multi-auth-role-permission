@@ -2,6 +2,20 @@
     "name": "shafiulnaeem/multi-auth-role-permission",
     "description": "Multi auth role permission where user easily assign role permission",
     "license": "MIT",
+    "keywords": [
+        "shafiulnaeem",
+        "rolepermission",
+        "multi-auth-role-permission"
+    ],
+    "homepage": "https://github.com/ShafiulNaeem/multi-auth-role-permission",
+    "type": "package",
+    "authors": [
+        {
+            "name": "ShafiulNaeem",
+            "email": "shafiulnaeemrifat@gmail.com",
+            "role": "Developer"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Shafiulnaeem\\MultiAuthRolePermission\\": "src/"
@@ -27,19 +41,12 @@
             ]
         }
     },
-    "authors": [
-        {
-            "name": "ShafiulNaeem",
-            "email": "shafiulnaeemrifat@gmail.com"
-        }
-    ],
     "require": {
+        "php": ">=8.0",
         "illuminate/support": "^10.26"
     },
     "require-dev": {
         "orchestra/testbench": "^8.12",
         "phpunit/phpunit": "^10.3"
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
