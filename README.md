@@ -177,7 +177,8 @@
     Route::delete('/delete/{id}', [RolePermissionController::class, 'destroy'])->name('delete');
   });
    ```
-  ```json 
+  ```json
+  // example: Request data for role create and update
   {
     "auth_guard_id" : 1, // from '{base_url}/gurds'  api.
     "role_id" : 2,  // defined role id from '{base_url}/role/list' api.
