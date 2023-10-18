@@ -54,15 +54,17 @@
     // user can access this block routes if user logged in and if user have permission to access this page 
     Route::middleware('permission:{your-guard}')->group(function () {
         // demo route
-        Route::get('/index', function () { 
-            return response()->json([
-               'code' => 200,
-               'success' => true,
-               'message' => 'Permission testing',
-               'data' => [],
-               'errors' => []
-            ]);  
-        })->name('index');
+        Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
+            Route::get('/index', function () { 
+              return response()->json([
+                 'code' => 200,
+                 'success' => true,
+                 'message' => 'Permission testing',
+                 'data' => [],
+                 'errors' => []
+              ]);  
+            })->name('index');
+          });
     });
   });
   ```
@@ -81,7 +83,8 @@
         // user can access this block routes if user loggedin and if user have permission 
         Route::middleware('permission:admin')->group(function () {
           // demo routes
-          Route::get('/admin/dashboard', function () { 
+          Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
+            Route::get('/admin/dashboard', function () { 
               return response()->json([
                  'code' => 200,
                  'success' => true,
@@ -89,7 +92,8 @@
                  'data' => [],
                  'errors' => []
               ]);  
-          })->name('admin.dashboard');
+            })->name('admin.dashboard');
+          });
       });
     });
   ```
@@ -103,7 +107,8 @@
       // user can access this block routes if user loggedin and if user have permission 
       Route::middleware('permission:customer')->group(function () {
           // demo routes
-          Route::get('/profile', function () { 
+          Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
+            Route::get('/profile', function () {
               return response()->json([
                  'code' => 200,
                  'success' => true,
@@ -111,7 +116,8 @@
                  'data' => [],
                  'errors' => []
               ]);  
-          })->name('customer.profile');
+            })->name('customer.profile');
+          });
       });
     });
   ```
