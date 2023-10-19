@@ -54,10 +54,12 @@ if ( ! function_exists('routePermission') ){
             ->where('role_permission_modifications.auth_user_id',$user_id)
             ->where('role_permission_modifications.is_permit',1)
             ->pluck('route')->toArray();
+
+
         $access = false;
         if (count($permissions) > 0){
             foreach ($permissions as $route){
-                if( matchTwoStringPattern($current_url,$route) ){
+                if( matchTwoStringPattern($current_url,url($route)) ){
                     $access = true;
                     break;
                 }
