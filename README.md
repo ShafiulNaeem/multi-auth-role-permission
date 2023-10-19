@@ -219,7 +219,7 @@
   ```json
   // example: Request data
   {
-    "auth_user_id" : 1, // from '/gurds'  api.
+    "auth_user_id" : 1, // your user id
     "role_id" : 1
   }
   ```
@@ -232,7 +232,7 @@
   ```json
   // example: Request data
   {
-    "auth_user_id" : 1, // from '/gurds'  api.
+    "auth_user_id" : 1, // your user id
     "role_id" : 2,
     "role_permissions" : [ // permission data from 'user/permission/list' api.
         {
