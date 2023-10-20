@@ -1,6 +1,8 @@
 <?php
 
 
+use Shafiulnaeem\MultiAuthRolePermission\Models\UserRole;
+
 if ( ! function_exists('sendResponse') ){
     /**
      * @param $message
@@ -393,5 +395,16 @@ if ( ! function_exists('getUsualMethodName') ){
         if ( in_array('trace', $methods) ) return 'TRACE';
         if ( in_array('connect', $methods) ) return 'CONNECT';
         return '';
+    }
+}
+if ( ! function_exists('userRole') ){
+    function userRole($guard, $user_id)
+    {
+        return UserRole::join('auth_guards','auth_guards.id','=','user_roles.auth_guard_id')
+            ->join('roles','roles.id','=','user_roles.role_id')
+            ->where(['auth_guards.name' => $guard , 'user_roles.auth_user_id' => $user_id])
+            ->select('user_roles.role_id','roles.name as role')
+            ->orderBy('user_roles.id','desc')
+            ->first();
     }
 }
