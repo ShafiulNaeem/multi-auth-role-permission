@@ -9,6 +9,7 @@ use Shafiulnaeem\MultiAuthRolePermission\Models\AuthGuard;
 use Shafiulnaeem\MultiAuthRolePermission\Models\Role;
 use Shafiulnaeem\MultiAuthRolePermission\Models\RolePermission;
 use Shafiulnaeem\MultiAuthRolePermission\Models\RolePermissionModification;
+use Shafiulnaeem\MultiAuthRolePermission\Models\UserRole;
 use Symfony\Component\HttpFoundation\Response;
 
 class RolePermissionController extends Controller
@@ -329,10 +330,22 @@ class RolePermissionController extends Controller
 
             $auth_guard_id = $this->get_auth_guard_id($request->role_id)->auth_guard_id;
 
+            // delete previous role
+            DB::table('user_roles')->where([
+                'auth_user_id'=>$request->auth_user_id,
+                'auth_guard_id'=>$auth_guard_id
+            ])->delete();
+            // insert role
+            UserRole::create([
+                'role_id'=>$request->role_id,
+                'auth_user_id'=>$request->auth_user_id,
+                'auth_guard_id'=>$auth_guard_id
+            ]);
+
             $permissions = $request->role_permissions;
             $permissions = permission_data_format($permissions,$auth_guard_id,$request->role_id,$request->auth_user_id);
             DB::table('role_permission_modifications')->where([
-                'role_id'=>$request->role_id,
+               // 'role_id'=>$request->role_id,
                 'auth_user_id'=>$request->auth_user_id,
                 'auth_guard_id'=>$auth_guard_id
             ])->delete();
