@@ -83,13 +83,13 @@ if ( ! function_exists('matchTwoStringPattern') ){
 
         if ( count($stringOneArray) != count($stringTwoArray) ) return false;
 
-        foreach ($stringOneArray as $index => $stringOneItem) {
+        foreach ($stringTwoArray as $index => $stringOneItem) {
             $match = preg_match('/{.*}/', $stringOneItem);
             if ( $match ){
-                $stringOneArray[$index] = $stringTwoArray[$index];
+                $stringTwoArray[$index] = $stringOneArray[$index];
             }
 
-            if ( str_contains($stringOneItem, '?') || str_contains($stringTwoArray[$index], '?') ){
+            if ( str_contains($stringOneItem, '?') || str_contains($stringOneArray[$index], '?') ){
                 if ( str_contains($stringOneArray[$index], '?') ){
                     $stringOneArray[$index] = strstr($stringOneArray[$index], '?', true);
                 }
