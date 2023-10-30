@@ -307,7 +307,7 @@ class RolePermissionController extends Controller
     public function user_permission(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'auth_user_id' => 'required|exists:auth_guards,id',
+            'auth_user_id' => 'required',
             'role_id' => 'required|exists:roles,id',
             'role_permissions' => 'required|array'
         ],
@@ -383,7 +383,7 @@ class RolePermissionController extends Controller
     public function get_user_permission_list(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'auth_user_id' => 'required|exists:auth_guards,id',
+            'auth_user_id' => 'required',
             'role_id' => 'required|exists:roles,id'
         ],
             [
