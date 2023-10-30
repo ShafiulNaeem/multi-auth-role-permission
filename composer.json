@@ -3,8 +3,11 @@
     "description": "Multi auth role permission where user easily assign role permission",
     "license": "MIT",
     "keywords": [
-        "shafiulnaeem",
-        "rolepermission",
+        "shafiul naeem",
+        "role permission",
+        "multi auth",
+        "role",
+        "permission",
         "multi-auth-role-permission"
     ],
     "homepage": "https://github.com/ShafiulNaeem/multi-auth-role-permission",
