@@ -403,7 +403,7 @@ if ( ! function_exists('userRole') ){
         return UserRole::join('auth_guards','auth_guards.id','=','user_roles.auth_guard_id')
             ->join('roles','roles.id','=','user_roles.role_id')
             ->where(['auth_guards.name' => $guard , 'user_roles.auth_user_id' => $user_id])
-            ->select('user_roles.role_id','roles.name as role')
+            ->select('user_roles.role_id','roles.name as role','roles.is_admin')
             ->orderBy('user_roles.id','desc')
             ->first();
     }
