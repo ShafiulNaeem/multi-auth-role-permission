@@ -25,8 +25,11 @@ class RolePermissionController extends Controller
         $data = $this->mainQuery()->orderBy('roles.id','desc');
 
         if ( $params['search'] ?? false ) {
-            $data = $data->where('roles.name', 'like', '%' . $params['search'] . '%')
-                ->orWhere('auth_guards.name', 'like', '%' . $params['search'] . '%');
+            $data = $data->where('roles.name', 'like', '%' . $params['search'] . '%');
+        }
+
+        if ( $params['guard'] ?? false ) {
+            $data = $data->where('auth_guards.name',$params['guard']);
         }
         $data = $data->paginate(page_limit($params));
 
