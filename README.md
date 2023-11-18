@@ -22,8 +22,21 @@
   ``` php artisan add:auth {your-guard-name} ```
 
 - After add auth guard, hit  ``` applicatoin_url/guards ``` get api for guard list.
-  ` GET ` [http://localhost:8000/guards]( http://localhost:8000/guards )
-  example:
+  ` GET ` [http://localhost:8000/guards]( http://localhost:8000/guards ) or use bellow route
+  ```
+    use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
+    use Symfony\Component\HttpFoundation\Response;
+    
+    // auth guards
+    Route::get('/guards', function () {
+        return sendResponse(
+            'Data fetch successfully.',
+            \Shafiulnaeem\MultiAuthRolePermission\Models\AuthGuard::all(),
+            Response::HTTP_OK
+        );
+    })->name('guards');
+  ```
+  Resonse:
    ```json
    {
     "code": 200,
@@ -166,6 +179,8 @@
   ```php
   use Shafiulnaeem\MultiAuthRolePermission\Http\Controllers\RolePermissionController;
   Route::group(['prefix' => 'role', 'as' => 'role.'], function () {
+    // use `guard` params for gurad wise role list
+    // use `search` params for search role  
     Route::get('/list', [RolePermissionController::class, 'index'])->name('list');
     Route::post('/create', [RolePermissionController::class, 'store'])->name('create');
     Route::get('/show/{id}', [RolePermissionController::class, 'show'])->name('show');
@@ -264,4 +279,13 @@
         }
     ]
   }
+  ```
+- For user role use `userRole($guard_name, $user_id)` function .
+  ```json
+     // response like bellow
+    {
+      "role_id": 1,
+      "role: "Admin",
+      "is_admin": 1
+    }
   ```
