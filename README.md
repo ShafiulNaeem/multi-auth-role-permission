@@ -14,7 +14,7 @@
 ## Installation
 👉 To install this package, you'll need to have Laravel version 9 or higher and PHP version 8.0.0 or higher installed on your machine. You can download the latest version of PHP from the official PHP resource: https://www.php.net/downloads.php. Ensure your environment meets these requirements before proceeding with the installation.
 
-- Install auth package in laravel project (passport,JWT etc).
+- Install auth package in laravel project (JWT, laravel/ui etc).
 - Install package:
   ``` composer require shafiulnaeem/multi-auth-role-permission ```
 - Run migrate command: ``` php artisan migrate ```
