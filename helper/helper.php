@@ -135,6 +135,7 @@ if ( ! function_exists('role_permission_array_from_route') ){
             //$operation = isset($routeNameArray[2])?$routeNameArray[2]:null;
             $operation = removeSubString($routeName, $module);
             $operation = str_replace('.',' ',$operation);
+            $operation = trim($operation);
 
             // get route
 //            $routeUri = removeSubString($route['uri'], '/{id}');
