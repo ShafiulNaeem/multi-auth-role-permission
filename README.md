@@ -189,7 +189,6 @@
   // example: Request data for role create and update
   {
     "auth_guard_id" : 1, // from '{base_url}/gurds'  api.
-    "role_id" : 2,  // defined role id from '{base_url}/role/list' api.
     "name" : "admin",
     "is_admin" : 0, // 1 means admin role and 0 means other role. If admin then there is no permission for this role.
     "role_permissions" : [ // permission data from '{base_url}/permission/{guard}' api.
