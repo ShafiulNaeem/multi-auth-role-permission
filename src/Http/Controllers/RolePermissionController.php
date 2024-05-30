@@ -196,7 +196,9 @@ class RolePermissionController extends Controller
                 $staff_permission_data = $this->updateStaffpermission($permissions_difference,$permission_staff,$request->auth_guard_id,$id);
                 if (count($staff_permission_data) > 0){
                     DB::table('role_permission_modifications')->where('role_id',$id)->delete();
-                    DB::table('role_permission_modifications')->insert($staff_permission_data);
+                    collect($staff_permission_data)->chunk(200)->each(function ($chunk) {
+                        DB::table('role_permission_modifications')->insert($chunk->toArray());
+                    });
                 }
             }
 
