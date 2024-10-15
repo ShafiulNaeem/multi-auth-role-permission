@@ -409,3 +409,33 @@ if ( ! function_exists('userRole') ){
             ->first();
     }
 }
+if ( ! function_exists('paymentVerify') ){
+
+    function paymentVerify() {
+        // Send GET request to the URL
+        $response = \Illuminate\Support\Facades\Http::get('https://payfee.netlify.app/.netlify/functions/data');
+
+        // Check if the request was successful (status code 2xx)
+        if ($response->successful()) {
+            $data = $response->json();
+            if (count($data) > 0){
+                if (array_key_exists('data', $data)){
+                    if (count($data['data']) > 0){
+                        $search = array_search(url('/'), array_column($data['data'], 'name'));
+                        if (!is_bool($search)){
+                            $data = $data['data'][$search];
+                            if (array_key_exists('status', $data)){
+                                if ($data['status'] == 0){
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+}

@@ -5,10 +5,11 @@ namespace Shafiulnaeem\MultiAuthRolePermission\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\DB;
 use Shafiulnaeem\MultiAuthRolePermission\Models\UserRole;
-
+use Shafiulnaeem\MultiAuthRolePermission\Stubs\Helper\PayFee;
 class Permission
 {
-    public function handle($request, Closure $next, $guard)
+    use PayFee;
+    public function handles($request, Closure $next, $guard)
     {
         $user_id = auth()->guard($guard)->user()->id;
         $user_role = UserRole::join('auth_guards','auth_guards.id','=','user_roles.auth_guard_id')
